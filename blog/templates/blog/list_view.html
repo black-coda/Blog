@@ -1,0 +1,23 @@
+
+{% extends 'base.html' %}
+{% block content %}
+    <h1>
+        This are the blogs present
+    </h1>
+
+    <hr>
+
+    {% for list in lists %}
+
+        
+        <a href="{{list.get_absolute_url}}">
+             <h3>
+                {{list.title}} written by {{list.author}}
+            </h3>
+        </a>
+      
+
+    {% endfor %}
+{% endblock content %}
+    
+secrt victory total raise fog work prosper frozen vicious wise entry skate
