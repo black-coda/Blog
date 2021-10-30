@@ -7,5 +7,4 @@ app_name = 'blog'
 urlpatterns = [
     path('', PostListView.as_view(), name='PostList'),
     path('<int:pk>/', detail_view, name='PostDetail'),
-    path('form/', authorForm, name='authorForm'),
 ]

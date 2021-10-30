@@ -3,7 +3,7 @@
 {% block content %}
 
     <h2>
-        <a href='{% url 'blog:PostList' %}' >Return to list</a>
+        <a href="{% url 'blog:PostList' %}" >Return to list</a>
     </h2>
 
     <h1>
@@ -19,6 +19,9 @@
         </h3>
 
     <div>
+        <div>
+          {{details.image_cover}}
+        </div>
         {{details.article}}
     </div> 
 

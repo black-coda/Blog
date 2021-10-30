@@ -6,11 +6,12 @@ from django.urls import reverse
 
 class UserManager(BaseUserManager):
     #creating methods for base user manager
-    def create_user(self, email, password=None, is_active = True, is_staff = False, is_admin = False):
-        if not email and password:
+    def create_user(self, email,full_name ,password=None, is_active = True, is_staff = False, is_admin = False):
+        if not email and password and full_name:
             raise ValueError('Field required to be filled')
         user = self.model(
-            email = self.normalize_email(email)
+            email = self.normalize_email(email),
+            full_name =full_name
 
         )
         user.set_password(password) #also for changing password
@@ -20,18 +21,20 @@ class UserManager(BaseUserManager):
         user.save(using=self.db)
         return user
 
-    def create_staffuser(self, email, password=None):
+    def create_staffuser(self, email,full_name, password=None):
         user = self.create_user(
             email,
+            full_name,
             password = password,
             is_staff=True
         )
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None ):
+    def create_superuser(self, email, full_name, password=None ):
         user = self.create_user(
             email,
+            full_name,
             password = password,
             is_staff=True,
             is_admin=True
@@ -42,6 +45,7 @@ class UserManager(BaseUserManager):
 #Creating my own custom user
 class User(AbstractBaseUser):
     email           =   models.EmailField(max_length=255, unique=True)
+    full_name       =   models.CharField(max_length=234,blank=True, null=True)
     active          =   models.BooleanField(default=True)   #can user login
     staff           =   models.BooleanField(default=False)  #is user a staff
     admin           =   models.BooleanField(default=False)  #SUPERUSER
@@ -50,15 +54,19 @@ class User(AbstractBaseUser):
     USERNAME_FIELD  =   'email' #change email to comp
     #email and password are required by default
 
-    REQUIRED_FIELDS =   []
+    REQUIRED_FIELDS =   ['full_name',]
 
     def __str__(self):
         return self.email
 
     def get_full_name(self):
+        if self.full_name:
+            return self.full_name
         return self.email
 
     def get_short_name(self):
+        if self.full_name:
+            return self.full_name
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -117,6 +125,7 @@ class AuthorPost(models.Model):
     title       =   models.CharField(max_length=400, unique=True,)
     author      =   models.ForeignKey(Author, on_delete=models.CASCADE)
     article     =   models.TextField(max_length=1500000)
+    image_cover = models.ImageField(upload_to='images_cover/', null = True)
     category    =   models.CharField(max_length=700, choices=CATEGORY_CHOICES)
     publish     =   models.DateTimeField(default=timezone.now)
     created_on  =   models.DateTimeField(auto_now_add=True)

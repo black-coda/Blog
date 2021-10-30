@@ -1,4 +1,3 @@
-from django.forms import forms
 from django.views import View
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -6,10 +5,11 @@ from django.views.generic.edit import FormView
 from . models import AuthorPost
 from django.views.generic import (ListView, DetailView, DeleteView, CreateView, TemplateView, FormView)
 from django.views.generic.detail import SingleObjectMixin
-from . forms import SignUpForm
+from . forms import CreatePostForm, RegisterForm
 from django import forms
 from . models import Comment
-
+from django.contrib.auth import authenticate, get_user_model
+User = get_user_model()
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -66,7 +66,7 @@ def detail_view(request, pk):
     if request.method == 'POST':
         form = CommentForm(request.POST)
 
-        if form.is_valid(form):
+        if form.is_valid():
             new_comment = form.save(commit=False) #dont save directly to db
             new_comment.post = detail
             print(detail)
@@ -94,13 +94,24 @@ def detail_view(request, pk):
     return render(request,'blog/detail_view.html', context )
 """
 def authorForm(request):
-    form = SignUpForm()
+    form = CreatePostForm()
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = CreatePostForm(request.POST)
         if form.is_valid:
             form.save()
             return redirect('blog:PostList')
 
     return render(request, 'blog/form.html', {'form':form})
 
+class AuthorPostForm(CreateView):
+    template_name = 'blog/authorpost.html'
+    form_class = CreatePostForm
 
+
+def AuthorRegistrationForm(request):
+    form = RegisterForm()
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+    return render(request, 'registration/signup.html',{'form':form})
