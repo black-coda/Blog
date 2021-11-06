@@ -3,13 +3,13 @@ from .models import AuthorPost, Comment
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-User = get_user_model()
+#User = get_user_model()
+from . models import User
 class CreatePostForm(forms.ModelForm):
     class Meta:
         model = AuthorPost
         fields = [
             "title",
-            "author",
             "article",
             "category",
             "status",

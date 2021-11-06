@@ -15,12 +15,19 @@
     
 
         <h3>
-            {{details.title}} written by {{details.author}}
+            {{details.title}} written by {{details.user.author}}
         </h3>
 
     <div>
         <div>
-          {{details.image_cover}}
+          {% if details.image_cover %}
+            <img src="{{details.image_cover.url}}" width="500" height="600" alt="image_cover">
+            {% else %}
+            <h2>
+              image absent
+            </h2>
+          {% endif %}
+          
         </div>
         {{details.article}}
     </div> 

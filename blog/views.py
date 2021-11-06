@@ -8,8 +8,9 @@ from django.views.generic.detail import SingleObjectMixin
 from . forms import CreatePostForm, RegisterForm
 from django import forms
 from . models import Comment
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import authenticate, get_user_model,login
 User = get_user_model()
+from django.contrib.auth.decorators import login_required
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -93,12 +94,15 @@ def detail_view(request, pk):
     context = {'details':detail, 'form':form}
     return render(request,'blog/detail_view.html', context )
 """
+@login_required
 def authorForm(request):
     form = CreatePostForm()
     if request.method == 'POST':
         form = CreatePostForm(request.POST)
         if form.is_valid:
+            #post = form.save(commit=False)
             form.save()
+            #post.author = request.user
             return redirect('blog:PostList')
 
     return render(request, 'blog/form.html', {'form':form})
@@ -114,4 +118,11 @@ def AuthorRegistrationForm(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            user = authenticate(email = email, password = password)
+            login(request, user)
+            return redirect('blog:PostList')
+        else:
+            form = RegisterForm()
     return render(request, 'registration/signup.html',{'form':form})

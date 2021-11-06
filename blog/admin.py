@@ -47,7 +47,7 @@ class PostAdmin(admin.ModelAdmin):
     ordering = ('status', 'publish')
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('username',)
+    list_display = ('author',)
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):

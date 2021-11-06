@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 from django.urls import reverse
+from django.db.models.signals import post_save
 #creatiing base user manager
 
 class UserManager(BaseUserManager):
@@ -60,13 +61,9 @@ class User(AbstractBaseUser):
         return self.email
 
     def get_full_name(self):
-        if self.full_name:
-            return self.full_name
         return self.email
 
     def get_short_name(self):
-        if self.full_name:
-            return self.full_name
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -93,10 +90,8 @@ class User(AbstractBaseUser):
 
 class Author(models.Model):
     author = models.OneToOneField(User, on_delete=models.CASCADE)
-    username = models.CharField(max_length=50)
-    
     def __str__(self):
-        return self.username
+        return self.author.email
 
 class PublishedManger(models.Manager):
     def get_queryset(self):
@@ -125,7 +120,7 @@ class AuthorPost(models.Model):
     title       =   models.CharField(max_length=400, unique=True,)
     author      =   models.ForeignKey(Author, on_delete=models.CASCADE)
     article     =   models.TextField(max_length=1500000)
-    image_cover = models.ImageField(upload_to='images_cover/', null = True)
+    image_cover =   models.ImageField(upload_to='images_cover/', null = True, blank = True)
     category    =   models.CharField(max_length=700, choices=CATEGORY_CHOICES)
     publish     =   models.DateTimeField(default=timezone.now)
     created_on  =   models.DateTimeField(auto_now_add=True)
@@ -154,3 +149,15 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_on',]
+    """
+    def approvalOfComment(self):
+        self.active = True
+        self.save
+    """
+
+def auther_user_create_signal(sender, instance, created, **kwargs):
+    print(instance, sender, created)
+    if created:
+        Author.objects.create(author=instance)
+
+post_save.connect(auther_user_create_signal, sender=User)
