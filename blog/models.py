@@ -149,11 +149,11 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_on',]
-    """
+
     def approvalOfComment(self):
         self.active = True
         self.save
-    """
+
 
 def auther_user_create_signal(sender, instance, created, **kwargs):
     print(instance, sender, created)

@@ -66,7 +66,6 @@ def detail_view(request, pk):
     form = CommentForm()
     if request.method == 'POST':
         form = CommentForm(request.POST)
-
         if form.is_valid():
             new_comment = form.save(commit=False) #dont save directly to db
             new_comment.post = detail
@@ -100,9 +99,10 @@ def authorForm(request):
     if request.method == 'POST':
         form = CreatePostForm(request.POST)
         if form.is_valid:
-            #post = form.save(commit=False)
+            post = form.save(commit=False)
+            #form.save()
+            post.author = request.user.author
             form.save()
-            #post.author = request.user
             return redirect('blog:PostList')
 
     return render(request, 'blog/form.html', {'form':form})
@@ -118,11 +118,7 @@ def AuthorRegistrationForm(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
-            user = authenticate(email = email, password = password)
-            login(request, user)
-            return redirect('blog:PostList')
+            return redirect('login')
         else:
             form = RegisterForm()
     return render(request, 'registration/signup.html',{'form':form})
