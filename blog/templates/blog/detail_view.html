@@ -1,6 +1,6 @@
 
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'navbar.html' %}
+{% block navbar %}
 
     <h2>
         <a href="{% url 'blog:PostList' %}" >Return to list</a>
@@ -67,4 +67,4 @@
       </div>
     </div>
   </div>
-{% endblock content %}
+{% endblock navbar %}

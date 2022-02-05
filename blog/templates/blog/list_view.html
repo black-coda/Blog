@@ -1,21 +1,57 @@
+{% extends 'navbar.html' %}
 
-{% extends 'base.html' %}
-{% block content %}
-    <h1>
-        This are the blogs present
-    </h1>
+{% block navbar %}
 
-    <hr>
 
-    {% for list in lists %}
 
-        
-        <a href="{{list.get_absolute_url}}">
-             <h3>
-                {{list.title}} written by {{list.user.author}}
-            </h3>
-        </a>
-      
+        <!-- Page Header-->
+        <header class="masthead">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="site-heading">
+                            <h1>Clean Blog</h1>
+                            <span class="subheading">A Blog Theme by Start Bootstrap</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content-->
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
 
-    {% endfor %}
-{% endblock content %}
+            
+
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <!-- Post preview-->
+            {% for list in lists %}
+                    <div class="post-preview">
+                        <a href="{{list.get_absolute_url}}">
+                            <h2 class="post-title">{{list.title}}</h2>
+                            <h3 class="post-subtitle">{{list.subtitle}}</h3>
+                        </a>
+                        <p class="post-meta">
+                            Posted by
+
+                            <a href="#">
+                                <h3>
+                                    {{list.author}}
+                                </h3>
+                            </a>
+                            {{list.created_on}}
+                        </p>
+                    </div>
+                    <!-- Divider-->
+                    <hr class="my-4" />
+            {% endfor %}
+                    <!-- Post preview-->
+                    <!-- Pager-->
+                    <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+                </div>
+            
+            </div>
+        </div>
+
+{% endblock navbar %}
+        <!-- Footer-->

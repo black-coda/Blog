@@ -19,7 +19,7 @@ class UserManager(BaseUserManager):
         user.staff      = is_staff
         user.admin      = is_admin
         user.active     = is_active
-        user.save(using=self.db)
+        user.save(using=self._db)
         return user
 
     def create_staffuser(self, email,full_name, password=None):
@@ -55,7 +55,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD  =   'email' #change email to comp
     #email and password are required by default
 
-    REQUIRED_FIELDS =   ['full_name',]
+    REQUIRED_FIELDS =   ['full_name',]  #A list of the field names that will be prompted for when creating a user via the createsuperuser management command.
 
     def __str__(self):
         return self.email
